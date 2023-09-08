@@ -1,23 +1,23 @@
 /*global describe, it, beforeEach, inject, expect*/
-(function () {
+(() => {
 	'use strict';
 
-	describe('Todo Controller', function () {
-		var ctrl, scope, store;
+	describe('Todo Controller', () => {
+		let ctrl, scope, store;
 
 		// Load the module containing the app, only 'ng' is loaded by default.
-		beforeEach(module('todomvc'));
+		beforeEach(angular.mock.module('todomvc'));
 
-		beforeEach(inject(function ($controller, $rootScope, localStorage) {
+		beforeEach(inject(($controller, $rootScope, localStorage) => {
 			scope = $rootScope.$new();
 
 			store = localStorage;
 
 			localStorage.todos = [];
-			localStorage._getFromLocalStorage = function () {
+			localStorage._getFromLocalStorage = () => {
 				return [];
 			};
-			localStorage._saveToLocalStorage = function (todos) {
+			localStorage._saveToLocalStorage = (todos) => {
 				localStorage.todos = todos;
 			};
 
@@ -27,29 +27,29 @@
 			});
 		}));
 
-		it('should not have an edited Todo on start', function () {
+		it('should not have an edited Todo on start', () => {
 			expect(scope.editedTodo).toBeNull();
 		});
 
-		it('should not have any Todos on start', function () {
+		it('should not have any Todos on start', () => {
 			expect(scope.todos.length).toBe(0);
 		});
 
-		it('should have all Todos completed', function () {
+		it('should have all Todos completed', () => {
 			scope.$digest();
 			expect(scope.allChecked).toBeTruthy();
 		});
 
-		describe('the filter', function () {
-			it('should default to ""', function () {
+		describe('the filter', () => {
+			it('should default to ""', () => {
 				scope.$emit('$routeChangeSuccess');
 
 				expect(scope.status).toBe('');
 				expect(scope.statusFilter).toEqual({});
 			});
 
-			describe('being at /active', function () {
-				it('should filter non-completed', inject(function ($controller) {
+			describe('being at /active', () => {
+				it('should filter non-completed', inject(($controller) => {
 					ctrl = $controller('TodoCtrl', {
 						$scope: scope,
 						store: store,
@@ -63,8 +63,8 @@
 				}));
 			});
 
-			describe('being at /completed', function () {
-				it('should filter completed', inject(function ($controller) {
+			describe('being at /completed', () => {
+				it('should filter completed', inject(($controller) => {
 					ctrl = $controller('TodoCtrl', {
 						$scope: scope,
 						$routeParams: {
@@ -79,10 +79,10 @@
 			});
 		});
 
-		describe('having no Todos', function () {
-			var ctrl;
+		describe('having no Todos', () => {
+			let ctrl;
 
-			beforeEach(inject(function ($controller) {
+			beforeEach(inject(($controller) => {
 				ctrl = $controller('TodoCtrl', {
 					$scope: scope,
 					store: store
@@ -90,14 +90,14 @@
 				scope.$digest();
 			}));
 
-			it('should not add empty Todos', function () {
+			it('should not add empty Todos', () => {
 				scope.newTodo = '';
 				scope.addTodo();
 				scope.$digest();
 				expect(scope.todos.length).toBe(0);
 			});
 
-			it('should not add items consisting only of whitespaces', function () {
+			it('should not add items consisting only of whitespaces', () => {
 				scope.newTodo = '   ';
 				scope.addTodo();
 				scope.$digest();
@@ -105,7 +105,7 @@
 			});
 
 
-			it('should trim whitespace from new Todos', function () {
+			it('should trim whitespace from new Todos', () => {
 				scope.newTodo = '  buy some unicorns  ';
 				scope.addTodo();
 				scope.$digest();
@@ -114,10 +114,10 @@
 			});
 		});
 
-		describe('having some saved Todos', function () {
-			var ctrl;
+		describe('having some saved Todos', () => {
+			let ctrl;
 
-			beforeEach(inject(function ($controller) {
+			beforeEach(inject(($controller) => {
 				ctrl = $controller('TodoCtrl', {
 					$scope: scope,
 					store: store
@@ -131,46 +131,46 @@
 				scope.$digest();
 			}));
 
-			it('should count Todos correctly', function () {
+			it('should count Todos correctly', () => {
 				expect(scope.todos.length).toBe(5);
 				expect(scope.remainingCount).toBe(3);
 				expect(scope.completedCount).toBe(2);
 				expect(scope.allChecked).toBeFalsy();
 			});
 
-			it('should save Todos to local storage', function () {
+			it('should save Todos to local storage', () => {
 				expect(scope.todos.length).toBe(5);
 			});
 
-			it('should remove Todos w/o title on saving', function () {
-				var todo = store.todos[2];
+			it('should remove Todos w/o title on saving', () => {
+				let todo = store.todos[2];
 				scope.editTodo(todo);
 				todo.title = '';
 				scope.saveEdits(todo);
 				expect(scope.todos.length).toBe(4);
 			});
 
-			it('should trim Todos on saving', function () {
-				var todo = store.todos[0];
+			it('should trim Todos on saving', () => {
+				let todo = store.todos[0];
 				scope.editTodo(todo);
 				todo.title = ' buy moar unicorns  ';
 				scope.saveEdits(todo);
 				expect(scope.todos[0].title).toBe('buy moar unicorns');
 			});
 
-			it('clearCompletedTodos() should clear completed Todos', function () {
+			it('clearCompletedTodos() should clear completed Todos', () => {
 				scope.clearCompletedTodos();
 				expect(scope.todos.length).toBe(3);
 			});
 
-			it('markAll() should mark all Todos completed', function () {
+			it('markAll() should mark all Todos completed', () => {
 				scope.markAll(true);
 				scope.$digest();
 				expect(scope.completedCount).toBe(5);
 			});
 
-			it('revertTodo() get a Todo to its previous state', function () {
-				var todo = store.todos[0];
+			it('revertTodo() get a Todo to its previous state', () => {
+				let todo = store.todos[0];
 				scope.editTodo(todo);
 				todo.title = 'Unicorn sparkly skypuffles.';
 				scope.revertEdits(todo);
@@ -179,4 +179,4 @@
 			});
 		});
 	});
-}());
+})();
